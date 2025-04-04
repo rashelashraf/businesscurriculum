@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI for Business Curriculum Explorer</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #2c3e50;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --info-color: #3498db;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    body {
+      background-color: #f5f7fa;
+      color: var(--dark-color);
+      line-height: 1.6;
+    }
+    
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 0;
+    }
+    
+    .program-selector {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+    
+    .program-btn {
+      padding: 1rem 2rem;
+      margin: 0 0.5rem;
+      border: none;
+      border-radius: 5px;
+      background-color: var(--light-color);
+      color: var(--dark-color);
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .program-btn.active {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .filter-group {
+      margin: 0.5rem;
+    }
+    
+    .filter-label {
+      margin-right: 0.5rem;
+      font-weight: bold;
+    }
+    
+    select, input {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .search-box {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      width: 300px;
+      max-width: 100%;
+    }
+    
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .course-card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-header {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 1rem;
+      position: relative;
+    }
+    
+    .bachelor .card-header {
+      background-color: var(--secondary-color);
+    }
+    
+    .mba .card-header {
+      background-color: var(--info-color);
+    }
+    
+    .year-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: var(--light-color);
+      color: var(--dark-color);
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    
+    .card-body {
+      padding: 1rem;
+    }
+    
+    .course-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--dark-color);
+    }
+    
+    .course-description {
+      color: #555;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      height: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+    }
+    
+    .prerequisites {
+      font-size: 0.85rem;
+      color: #777;
+      margin-top: 0.5rem;
+    }
+    
+    .prereq-list {
+      list-style-type: none;
+      padding-left: 0.5rem;
+    }
+    
+    .prereq-list li {
+      position: relative;
+      padding-left: 1rem;
+    }
+    
+    .prereq-list li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--secondary-color);
+    }
+    
+    .course-footer {
+      padding: 1rem;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #eee;
+    }
+    
+    .course-type {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      background-color: #eee;
+    }
+    
+    .core {
+      background-color: var(--info-color);
+      color: white;
+    }
+    
+    .elective {
+      background-color: var(--warning-color);
+      color: white;
+    }
+    
+    .capstone {
+      background-color: var(--accent-color);
+      color: white;
+    }
+    
+    .view-details-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .view-details-btn:hover {
+      background-color: #34495e;
+    }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 800px;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .close-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #777;
+    }
+    
+    .modal-header {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 1rem;
+    }
+    
+    .modal-title {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+    
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+    
+    .modal-footer {
+      text-align: right;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+    
+    .section-title {
+      font-size: 1.2rem;
+      margin: 1rem 0 0.5rem;
+      color: var(--primary-color);
+    }
+    
+    .pathway {
+      margin-top: 1rem;
+    }
+    
+    .pathway-title {
+      font-weight: bold;
+      color: var(--secondary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .pathway-courses {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .pathway-course {
+      background-color: #f0f0f0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .empty-state img {
+      max-width: 200px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .empty-state h3 {
+      margin-bottom: 1rem;
+      color: var(--dark-color);
+    }
+    
+    .empty-state p {
+      color: #777;
+      margin-bottom: 1.5rem;
+    }
+    
+    .empty-state button {
+      padding: 0.75rem 1.5rem;
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    
+    .empty-state button:hover {
+      background-color: #2980b9;
+    }
+    
+    @media screen and (max-width: 768px) {
+      .filters {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-group {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+      
+      .search-box {
+        width: 100%;
+      }
+      
+      .course-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AI for Business Curriculum Explorer</h1>
+    <p>Discover the right courses for your AI education journey</p>
+  </header>
+  
+  <div class="container">
+    <div class="program-selector">
+      <button id="bachelor-btn" class="program-btn active">Bachelor of AI for Business</button>
+      <button id="mba-btn" class="program-btn">MBA in AI</button>
+    </div>
+    
+    <div class="filters">
+      <div class="filter-group">
+        <label class="filter-label" for="year-filter">Year:</label>
+        <select id="year-filter">
+          <option value="all">All Years</option>
+          <option value="1">Year 1</option>
+          <option value="2">Year 2</option>
+          <option value="3">Year 3</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label" for="type-filter">Course Type:</label>
+        <select id="type-filter">
+          <option value="all">All Types</option>
+          <option value="core">Core</option>
+          <option value="elective">Elective</option>
+          <option value="capstone">Capstone</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <input type="text" class="search-box" id="search-box" placeholder="Search courses...">
+      </div>
+    </div>
+    
+    <div id="course-grid" class="course-grid">
+      <!-- Courses will be dynamically inserted here -->
+    </div>
+  </div>
+  
+  <div id="course-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn">&times;</span>
+      <div class="modal-header">
+        <h2 class="modal-title">Course Title</h2>
+      </div>
+      <div class="modal-body">
+        <p id="modal-description"></p>
+        
+        <h3 class="section-title">Prerequisites</h3>
+        <ul id="modal-prerequisites"></ul>
+        
+        <h3 class="section-title">Learning Outcomes</h3>
+        <ul id="modal-outcomes"></ul>
+        
+        <div id="modal-pathways" class="pathway">
+          <h3 class="section-title">Possible Career Pathways</h3>
+          <!-- Pathways will be inserted here -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="view-details-btn close-modal">Close</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Data arrays for MBA and Bachelor programs
+    const mbaCourses = [
+      {
+        id: 101,
+        title: "AI Foundations in Business",
+        description: "Comprehensive overview of AI concepts, technologies, and business applications for executives and managers. Focuses on strategic implementation and business value.",
+        prerequisites: [],
+        type: "core",
+        outcomes: [
+          "Understand core AI technologies and applications",
+          "Identify strategic opportunities for AI in business",
+          "Evaluate AI solutions for organizational needs",
+          "Develop frameworks for AI adoption"
+        ],
+        pathways: [
+          {
+            title: "AI Leadership",
+            courses: ["AI Driven Strategy and Risk Management", "AI Transformation and Integration"]
+          },
+          {
+            title: "Digital Transformation",
+            courses: ["AI Transformation and Integration", "AI Strategies and Enterprise Applications"]
+          }
+        ]
+      },
+      {
+        id: 102,
+        title: "Machine Learning in Business",
+        description: "Advanced exploration of machine learning techniques and applications for business problems. Emphasizes model selection, evaluation, and implementation strategies.",
+        prerequisites: [],
+        type: "core",
+        outcomes: [
+          "Select appropriate ML models for business problems",
+          "Evaluate model performance and business impact",
+          "Interpret complex model outputs for stakeholders",
+          "Design implementation strategies for ML solutions"
+        ],
+        pathways: [
+          {
+            title: "Data Science Leadership",
+            courses: ["AI Driven Business Intelligence and Customer Insights", "AI Transformation and Integration"]
+          },
+          {
+            title: "Product Innovation",
+            courses: ["Gen AI and Prompt Engineering in Business", "AI Driven Strategy and Risk Management"]
+          }
+        ]
+      },
+      {
+        id: 103,
+        title: "Data Ethics and Regulation",
+        description: "Explores ethical and regulatory frameworks for data usage and AI deployment. Addresses privacy, bias, transparency, and compliance considerations for executives.",
+        prerequisites: [],
+        type: "core",
+        outcomes: [
+          "Develop organizational data ethics frameworks",
+          "Navigate regulatory requirements for AI deployment",
+          "Address bias and fairness in AI systems",
+          "Create governance structures for responsible AI"
+        ],
+        pathways: [
+          {
+            title: "AI Governance",
+            courses: ["Responsible Artificial Intelligence", "AI Transformation and Integration"]
+          },
+          {
+            title: "Compliance Leadership",
+            courses: ["AI Driven Strategy and Risk Management", "AI Strategies and Enterprise Applications"]
+          }
+        ]
+      },
+      {
+        id: 104,
+        title: "AI Driven Strategy and Risk Management",
+        description: "Explores the integration of AI into strategic planning and risk management frameworks. Focuses on enhancing decision-making and mitigating risks through AI technologies.",
+        prerequisites: ["AI Foundations in Business"],
+        type: "core",
+        outcomes: [
+          "Integrate AI into strategic planning processes",
+          "Develop AI-enhanced risk management frameworks",
+          "Identify strategic opportunities and threats from AI",
+          "Create AI governance structures"
+        ],
+        pathways: [
+          {
+            title: "Strategic Leadership",
+            courses: ["AI Transformation and Integration", "AI Strategies and Enterprise Applications"]
+          },
+          {
+            title: "Risk Management",
+            courses: ["Responsible Artificial Intelligence", "AI Transformation and Integration"]
+          }
+        ]
+      },
+      {
+        id: 105,
+        title: "AI Driven Business Intelligence and Customer Insights",
+        description: "Examines AI applications for extracting actionable insights from data to drive strategic decision-making and enhance customer engagement.",
+        prerequisites: ["AI Foundations in Business"],
+        type: "core",
+        outcomes: [
+          "Implement AI-enhanced BI ecosystems",
+          "Extract actionable customer insights using AI",
+          "Develop data-driven decision frameworks",
+          "Design customer-centric strategies informed by AI"
+        ],
+        pathways: [
+          {
+            title: "Customer Experience Leadership",
+            courses: ["Gen AI and Prompt Engineering in Business", "AI Transformation and Integration"]
+          },
+          {
+            title: "Business Intelligence Strategy",
+            courses: ["Machine Learning in Business", "AI Transformation and Integration"]
+          }
+        ]
+      },
+      {
+        id: 106,
+        title: "Gen AI and Prompt Engineering in Business",
+        description: "Provides comprehensive introduction to generative AI and prompt engineering in business contexts. Focuses on practical applications for enhancing decision-making and operational efficiency.",
+        prerequisites: ["AI Foundations in Business"],
+        type: "core",
+        outcomes: [
+          "Design effective prompts for business applications",
+          "Implement generative AI solutions for business challenges",
+          "Evaluate generative AI outputs for quality and relevance",
+          "Develop workflows integrating generative AI"
+        ],
+        pathways: [
+          {
+            title: "Content Strategy",
+            courses: ["AI Driven Business Intelligence and Customer Insights", "AI Transformation and Integration"]
+          },
+          {
+            title: "AI Innovation",
+            courses: ["AI Strategies and Enterprise Applications", "AI Transformation and Integration"]
+          }
+        ]
+      },
+      {
+        id: 107,
+        title: "AI Transformation and Integration",
+        description: "Provides in-depth understanding of managing AI transformations and integrating AI technologies into business processes. Focuses on strategic, operational, and change management aspects.",
+        prerequisites: ["AI Foundations in Business", "AI Driven Strategy and Risk Management"],
+        type: "capstone",
+        outcomes: [
+          "Lead organizational AI transformation initiatives",
+          "Integrate AI solutions into existing business systems",
+          "Manage change processes for successful AI adoption",
+          "Evaluate and communicate AI transformation outcomes"
+        ],
+        pathways: [
+          {
+            title: "Digital Transformation Leadership",
+            courses: ["Executive leadership", "Digital strategy"]
+          },
+          {
+            title: "AI Strategy Consulting",
+            courses: ["Technology advisory", "Management consulting"]
+          }
+        ]
+      },
+      {
+        id: 108,
+        title: "AI Strategies and Enterprise Applications",
+        description: "Explores strategic frameworks for AI adoption and enterprise-wide implementation. Addresses technology assessment, business alignment, and organizational readiness.",
+        prerequisites: ["AI Foundations in Business"],
+        type: "elective",
+        outcomes: [
+          "Develop enterprise-wide AI strategies",
+          "Assess organizational readiness for AI adoption",
+          "Align AI initiatives with business objectives",
+          "Create roadmaps for enterprise AI implementation"
+        ],
+        pathways: [
+          {
+            title: "Enterprise Architecture",
+            courses: ["AI Transformation and Integration", "Gen AI and Prompt Engineering in Business"]
+          },
+          {
+            title: "IT Strategy",
+            courses: ["AI Driven Strategy and Risk Management", "AI Transformation and Integration"]
+          }
+        ]
+      },
+      {
+        id: 109,
+        title: "Responsible Artificial Intelligence",
+        description: "Explores advanced frameworks for ethical AI implementation and governance. Addresses fairness, accountability, transparency, and social impact considerations for leadership.",
+        prerequisites: ["Data Ethics and Regulation"],
+        type: "elective",
+        outcomes: [
+          "Implement responsible AI frameworks in organizations",
+          "Address complex ethical dilemmas in AI deployment",
+          "Design governance structures for ethical AI",
+          "Evaluate societal impacts of AI implementations"
+        ],
+        pathways: [
+          {
+            title: "Ethics and Compliance Leadership",
+            courses: ["AI Driven Strategy and Risk Management", "AI Transformation and Integration"]
+          },
+          {
+            title: "Responsible Innovation",
+            courses: ["Gen AI and Prompt Engineering in Business", "AI Transformation and Integration"]
+          }
+        ]
+      },
+      {
+        id: 110,
+        title: "Data Visualization and Visual Analytics",
+        description: "Advanced techniques for communicating complex data insights through visualization. Focuses on executive dashboards, storytelling with data, and decision support systems.",
+        prerequisites: [],
+        type: "elective",
+        outcomes: [
+          "Design executive-level data visualization systems",
+          "Create compelling data stories for stakeholders",
+          "Implement interactive decision support dashboards",
+          "Evaluate visualization effectiveness"
+        ],
+        pathways: [
+          {
+            title: "Business Intelligence Leadership",
+            courses: ["AI Driven Business Intelligence and Customer Insights", "AI Transformation and Integration"]
+          },
+          {
+            title: "Data Strategy",
+            courses: ["Machine Learning in Business", "AI Transformation and Integration"]
+          }
+        ]
+      },
+      {
+        id: 111,
+        title: "People Analytics",
+        description: "Strategic approaches to HR analytics and workforce intelligence. Addresses talent management, organizational design, and evidence-based people decisions.",
+        prerequisites: [],
+        type: "elective",
+        outcomes: [
+          "Implement strategic HR analytics frameworks",
+          "Make data-driven talent management decisions",
+          "Design analytics-informed organizational structures",
+          "Develop predictive workforce planning models"
+        ],
+        pathways: [
+          {
+            title: "HR Leadership",
+            courses: ["AI Driven Business Intelligence and Customer Insights", "AI Transformation and Integration"]
+          },
+          {
+            title: "Organizational Development",
+            courses: ["AI Transformation and Integration", "Responsible Artificial Intelligence"]
+          }
+        ]
+      },
+      {
+        id: 112,
+        title: "Strategic AI Implementation",
+        description: "Practical frameworks for implementing AI strategies across organizations. Focuses on project management, stakeholder alignment, and measuring business impact.",
+        prerequisites: ["AI Foundations in Business"],
+        type: "elective",
+        outcomes: [
+          "Develop comprehensive AI implementation plans",
+          "Manage cross-functional AI projects",
+          "Align stakeholders around AI initiatives",
+          "Measure and communicate AI business impact"
+        ],
+        pathways: [
+          {
+            title: "Technology Leadership",
+            courses: ["AI Transformation and Integration", "AI Strategies and Enterprise Applications"]
+          },
+          {
+            title: "Program Management",
+            courses: ["AI Transformation and Integration", "AI Driven Strategy and Risk Management"]
+          }
+        ]
+      }
+    ];
+
+    const bachelorCourses = [
+      {
+        id: 1,
+        title: "Introduction to Information Systems, Analytics and AI in Business",
+        description: "Provides fundamental understanding of information systems, data analytics, and AI applications in business contexts. Introduces key concepts and frameworks for digital transformation.",
+        prerequisites: [],
+        year: 1,
+        type: "core",
+        outcomes: [
+          "Understand the fundamentals of information systems",
+          "Explain the role of data analytics in business decision-making",
+          "Identify AI applications in various business contexts",
+          "Apply basic frameworks for digital transformation"
+        ],
+        pathways: [
+          {
+            title: "Business Intelligence",
+            courses: ["Data Visualization and Visual Analytics", "Big Data and AI in Business"]
+          },
+          {
+            title: "AI Strategy",
+            courses: ["AI in Marketing & Digital Strategy", "Artificial Intelligence Strategies and Enterprise Applications"]
+          }
+        ]
+      },
+      {
+        id: 2,
+        title: "Foundation to Python for AI",
+        description: "Introduces Python programming fundamentals with focus on business applications. Covers basic syntax, data structures, and libraries relevant to data analysis and AI implementation.",
+        prerequisites: [],
+        year: 1,
+        type: "core",
+        outcomes: [
+          "Write basic Python programs",
+          "Implement data structures for business applications",
+          "Use Python libraries for data manipulation",
+          "Create simple data analysis scripts"
+        ],
+        pathways: [
+          {
+            title: "Data Science",
+            courses: ["Programming for Analytics and AI in Business", "Machine Learning in Business"]
+          },
+          {
+            title: "AI Development",
+            courses: ["Business Machine Learning", "Big Data and AI in Business"]
+          }
+        ]
+      },
+      {
+        id: 3,
+        title: "Introduction to Data Analytics",
+        description: "Explores data collection, processing, visualization, and basic statistical analysis techniques for business decision-making. Emphasizes practical applications using industry-standard tools.",
+        prerequisites: [],
+        year: 1,
+        type: "core",
+        outcomes: [
+          "Collect and process business data",
+          "Apply basic statistical analysis techniques",
+          "Create data visualizations for business insights",
+          "Make data-driven business decisions"
+        ],
+        pathways: [
+          {
+            title: "Business Analytics",
+            courses: ["Data Visualization and Visual Analytics", "Machine Learning in Business"]
+          },
+          {
+            title: "Customer Analytics",
+            courses: ["Customer Analytics and AI", "Social Media and Networks Analytics"]
+          }
+        ]
+      },
+      {
+        id: 4,
+        title: "Business Requirements Modelling",
+        description: "Teaches methodologies for identifying, documenting, and analyzing business requirements for information systems and AI solutions. Includes process modeling and requirements specification.",
+        prerequisites: ["Introduction to Information Systems, Analytics and AI in Business"],
+        year: 1,
+        type: "core",
+        outcomes: [
+          "Identify business requirements for AI solutions",
+          "Document system specifications",
+          "Create process models",
+          "Analyze stakeholder needs"
+        ],
+        pathways: [
+          {
+            title: "Business Analysis",
+            courses: ["Data and Technology Governance in Business", "Artificial Intelligence Strategies and Enterprise Applications"]
+          },
+          {
+            title: "AI Project Management",
+            courses: ["AI-Driven Business Intelligence", "Strategic AI Implementation"]
+          }
+        ]
+      },
+      {
+        id: 5,
+        title: "Computer Applications and Information Technology",
+        description: "Surveys essential business software applications and information technology infrastructure. Covers productivity tools, database concepts, and enterprise systems.",
+        prerequisites: [],
+        year: 1,
+        type: "core",
+        outcomes: [
+          "Use business productivity software effectively",
+          "Understand database fundamentals",
+          "Describe enterprise system architecture",
+          "Evaluate technology solutions for business needs"
+        ],
+        pathways: [
+          {
+            title: "IT Management",
+            courses: ["Data and Technology Governance in Business", "Data Integration for Enterprise Automation"]
+          }
+        ]
+      },
+      {
+        id: 6,
+        title: "The Ethics of Data and AI",
+        description: "Examines ethical considerations in collecting and using data and deploying AI systems. Covers privacy, bias, transparency, and responsible innovation frameworks.",
+        prerequisites: ["Introduction to Information Systems, Analytics and AI in Business"],
+        year: 1,
+        type: "core",
+        outcomes: [
+          "Identify ethical issues in AI applications",
+          "Apply ethical frameworks to data collection and use",
+          "Evaluate bias in AI systems",
+          "Design privacy-preserving data practices"
+        ],
+        pathways: [
+          {
+            title: "AI Governance",
+            courses: ["Responsible Artificial Intelligence", "Data and Technology Governance in Business"]
+          },
+          {
+            title: "Ethical Technology",
+            courses: ["Responsible Artificial Intelligence", "Artificial Intelligence Strategies and Enterprise Applications"]
+          }
+        ]
+      },
+      {
+        id: 7,
+        title: "Programming for Analytics and AI in Business",
+        description: "Builds on programming fundamentals to develop applications for business analytics and AI. Focuses on data manipulation, analysis, and visualization libraries.",
+        prerequisites: ["Foundation to Python for AI"],
+        year: 2,
+        type: "core",
+        outcomes: [
+          "Develop data analysis applications",
+          "Implement visualization libraries",
+          "Create interactive dashboards",
+          "Automate business analytics processes"
+        ],
+        pathways: [
+          {
+            title: "Data Engineering",
+            courses: ["Data Integration for Enterprise Automation", "Big Data and AI in Business"]
+          },
+          {
+            title: "AI Development",
+            courses: ["Business Machine Learning", "Machine Learning in Business"]
+          }
+        ]
+      },
+      {
+        id: 8,
+        title: "Data Visualization and Visual Analytics",
+        description: "Teaches principles and techniques for effective data visualization. Covers design thinking, tools, and methods to communicate insights through visual representation.",
+        prerequisites: ["Introduction to Data Analytics"],
+        year: 2,
+        type: "core",
+        outcomes: [
+          "Design effective data visualizations",
+          "Apply visual analytics principles",
+          "Create interactive dashboards",
+          "Communicate insights through visual storytelling"
+        ],
+        pathways: [
+          {
+            title: "Business Intelligence",
+            courses: ["AI-Driven Business Intelligence", "Big Data and AI in Business"]
+          },
+          {
+            title: "Data Journalism",
+            courses: ["Social Media and Networks Analytics"]
+          }
+        ]
+      },
+      {
+        id: 9,
+        title: "Introduction to Artificial Intelligence",
+        description: "Provides comprehensive overview of AI concepts, technologies, and business applications. Includes machine learning fundamentals, natural language processing, and computer vision.",
+        prerequisites: ["Introduction to Information Systems, Analytics and AI in Business"],
+        year: 2,
+        type: "core",
+        outcomes: [
+          "Understand core AI concepts and technologies",
+          "Identify business applications of AI",
+          "Explain various AI approaches",
+          "Evaluate AI solutions for business problems"
+        ],
+        pathways: [
+          {
+            title: "AI Strategy",
+            courses: ["AI in Marketing & Digital Strategy", "Artificial Intelligence Strategies and Enterprise Applications"]
+          },
+          {
+            title: "AI Product Management",
+            courses: ["Generative AI for Business Practitioners", "Strategic AI Implementation"]
+          }
+        ]
+      },
+      {
+        id: 10,
+        title: "Business Machine Learning",
+        description: "Explores machine learning algorithms and their applications to business problems. Covers supervised and unsupervised learning techniques using business datasets.",
+        prerequisites: ["Programming for Analytics and AI in Business", "Introduction to Data Analytics"],
+        year: 2,
+        type: "core",
+        outcomes: [
+          "Apply machine learning algorithms to business problems",
+          "Interpret model results for business insights",
+          "Implement supervised and unsupervised learning techniques",
+          "Evaluate model performance"
+        ],
+        pathways: [
+          {
+            title: "Data Science",
+            courses: ["Machine Learning in Business", "Big Data and AI in Business"]
+          },
+          {
+            title: "Predictive Analytics",
+            courses: ["Customer Analytics and AI", "AI-Driven Business Intelligence"]
+          }
+        ]
+      },
+      {
+        id: 11,
+        title: "AI in Marketing & Digital Strategy",
+        description: "Examines AI applications in marketing, customer analytics, and digital strategy. Covers recommendation systems, customer segmentation, and personalization.",
+        prerequisites: ["Introduction to Artificial Intelligence"],
+        year: 2,
+        type: "core",
+        outcomes: [
+          "Implement AI for marketing campaigns",
+          "Design recommendation systems",
+          "Apply customer segmentation techniques",
+          "Develop personalization strategies"
+        ],
+        pathways: [
+          {
+            title: "Digital Marketing",
+            courses: ["Customer Analytics and AI", "Social Media and Networks Analytics"]
+          },
+          {
+            title: "Marketing Technology",
+            courses: ["Generative AI for Business Practitioners", "AI-Driven Business Intelligence"]
+          }
+        ]
+      },
+      {
+        id: 12,
+        title: "Data and Technology Governance in Business",
+        description: "Addresses frameworks for managing data assets and technology resources. Covers data quality, security, compliance, and IT governance principles.",
+        prerequisites: ["The Ethics of Data and AI"],
+        year: 2,
+        type: "core",
+        outcomes: [
+          "Develop data governance frameworks",
+          "Implement data quality management",
+          "Address compliance requirements",
+          "Design IT governance structures"
+        ],
+        pathways: [
+          {
+            title: "Data Management",
+            courses: ["Data Integration for Enterprise Automation", "Big Data and AI in Business"]
+          },
+          {
+            title: "IT Governance",
+            courses: ["Responsible Artificial Intelligence", "Strategic AI Implementation"]
+          }
+        ]
+      },
+      {
+        id: 13,
+        title: "Big Data and AI in Business",
+        description: "Explores big data technologies and their integration with AI for business value creation. Covers distributed computing, cloud platforms, and scalable analytics.",
+        prerequisites: ["Business Machine Learning"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Design big data architectures",
+          "Implement scalable analytics solutions",
+          "Apply big data technologies to business problems",
+          "Integrate AI with big data platforms"
+        ],
+        pathways: [
+          {
+            title: "Big Data Engineering",
+            courses: ["Data Integration for Enterprise Automation", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Enterprise AI",
+            courses: ["Artificial Intelligence Strategies and Enterprise Applications", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 14,
+        title: "Machine Learning in Business",
+        description: "Provides advanced coverage of machine learning techniques for business applications. Emphasizes model development, evaluation, and deployment using Python.",
+        prerequisites: ["Business Machine Learning"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Develop advanced machine learning models",
+          "Deploy models in business environments",
+          "Optimize model performance",
+          "Translate model outputs to business insights"
+        ],
+        pathways: [
+          {
+            title: "Data Science",
+            courses: ["Data Mining", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "ML Engineering",
+            courses: ["Big Data and AI in Business", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 15,
+        title: "Data Mining",
+        description: "Covers techniques for discovering patterns in large datasets. Includes association rules, clustering, classification, and anomaly detection for business insights.",
+        prerequisites: ["Business Machine Learning"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Apply data mining techniques to business datasets",
+          "Discover meaningful patterns in data",
+          "Implement anomaly detection systems",
+          "Extract actionable insights from large datasets"
+        ],
+        pathways: [
+          {
+            title: "Business Analytics",
+            courses: ["Machine Learning in Business", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Customer Intelligence",
+            courses: ["Customer Analytics and AI", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 16,
+        title: "People Analytics",
+        description: "Applies data-driven approaches to human resource management. Covers workforce planning, talent analytics, and evidence-based people strategies.",
+        prerequisites: ["Introduction to Data Analytics"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Implement HR analytics frameworks",
+          "Develop talent management strategies",
+          "Apply predictive modeling to workforce planning",
+          "Design evidence-based people strategies"
+        ],
+        pathways: [
+          {
+            title: "HR Analytics",
+            courses: ["Data Mining", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Workforce Strategy",
+            courses: ["AI-Driven Business Intelligence", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 17,
+        title: "Responsible Artificial Intelligence",
+        description: "Explores advanced ethical, legal, and social implications of AI. Focuses on governance frameworks, risk assessment, and responsible AI development.",
+        prerequisites: ["The Ethics of Data and AI"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Design responsible AI governance frameworks",
+          "Conduct AI risk assessments",
+          "Implement bias mitigation strategies",
+          "Develop ethical AI policies"
+        ],
+        pathways: [
+          {
+            title: "AI Ethics",
+            courses: ["Artificial Intelligence Strategies and Enterprise Applications", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Responsible Technology",
+            courses: ["Strategic AI Implementation", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 18,
+        title: "Artificial Intelligence Strategies and Enterprise Applications",
+        description: "Examines organizational strategies for AI adoption and implementation. Covers technology assessment, business process integration, and change management.",
+        prerequisites: ["Introduction to Artificial Intelligence"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Develop AI adoption strategies",
+          "Assess AI technologies for business fit",
+          "Design AI implementation roadmaps",
+          "Manage organizational change for AI adoption"
+        ],
+        pathways: [
+          {
+            title: "AI Strategy",
+            courses: ["Strategic AI Implementation", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Digital Transformation",
+            courses: ["Data Integration for Enterprise Automation", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 19,
+        title: "Data Integration for Enterprise Automation",
+        description: "Focuses on integrating data across enterprise systems for automation. Covers ETL processes, APIs, and workflow automation technologies.",
+        prerequisites: ["Data and Technology Governance in Business"],
+        year: 3,
+        type: "core",
+        outcomes: [
+          "Design data integration architectures",
+          "Implement ETL processes",
+          "Develop API integration strategies",
+          "Create automated workflow systems"
+        ],
+        pathways: [
+          {
+            title: "Enterprise Integration",
+            courses: ["Big Data and AI in Business", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Automation Architecture",
+            courses: ["Artificial Intelligence Strategies and Enterprise Applications", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 20,
+        title: "Transforming Business with AI (Capstone)",
+        description: "Culminating project-based course where students design and implement an AI solution for a real business problem. Integrates technical, ethical, and strategic dimensions.",
+        prerequisites: ["Big Data and AI in Business", "Machine Learning in Business", "Artificial Intelligence Strategies and Enterprise Applications"],
+        year: 3,
+        type: "capstone",
+        outcomes: [
+          "Design comprehensive AI solutions for business problems",
+          "Implement end-to-end AI projects",
+          "Evaluate business impact of AI implementations",
+          "Integrate technical, ethical, and strategic considerations"
+        ],
+        pathways: [
+          {
+            title: "AI Leadership",
+            courses: ["Graduate studies", "Industry certification"]
+          },
+          {
+            title: "AI Entrepreneurship",
+            courses: ["Graduate studies", "Startup incubation"]
+          }
+        ]
+      },
+      {
+        id: 21,
+        title: "Generative AI for Business Practitioners",
+        description: "Explores applications of generative AI models in business contexts. Covers prompt engineering, content generation, and implementation strategies.",
+        prerequisites: ["Introduction to Artificial Intelligence"],
+        year: 3,
+        type: "elective",
+        outcomes: [
+          "Apply generative AI to business use cases",
+          "Design effective prompts for different scenarios",
+          "Implement content generation workflows",
+          "Evaluate generative AI output quality"
+        ],
+        pathways: [
+          {
+            title: "AI Content Strategy",
+            courses: ["AI in Marketing & Digital Strategy", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "GenAI Product Management",
+            courses: ["Strategic AI Implementation", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 22,
+        title: "Social Media and Networks Analytics",
+        description: "Examines techniques for analyzing social media data and network structures. Covers sentiment analysis, influence measurement, and community detection.",
+        prerequisites: ["Introduction to Data Analytics"],
+        year: 3,
+        type: "elective",
+        outcomes: [
+          "Analyze social media data for business insights",
+          "Implement sentiment analysis techniques",
+          "Detect communities in social networks",
+          "Measure influence and engagement"
+        ],
+        pathways: [
+          {
+            title: "Digital Marketing Analytics",
+            courses: ["Customer Analytics and AI", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Social Media Strategy",
+            courses: ["AI in Marketing & Digital Strategy", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 23,
+        title: "Customer Analytics and AI",
+        description: "Focuses on using AI to derive customer insights and improve customer experience. Covers journey mapping, churn prediction, and lifetime value modeling.",
+        prerequisites: ["Business Machine Learning"],
+        year: 3,
+        type: "elective",
+        outcomes: [
+          "Build customer segmentation models",
+          "Implement churn prediction systems",
+          "Develop customer lifetime value models",
+          "Create personalized customer experiences"
+        ],
+        pathways: [
+          {
+            title: "Customer Intelligence",
+            courses: ["AI in Marketing & Digital Strategy", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "CRM Analytics",
+            courses: ["Social Media and Networks Analytics", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 24,
+        title: "AI-Driven Business Intelligence",
+        description: "Explores how AI enhances traditional business intelligence. Covers automated insights, natural language query, and predictive analytics.",
+        prerequisites: ["Data Visualization and Visual Analytics", "Business Machine Learning"],
+        year: 3,
+        type: "elective",
+        outcomes: [
+          "Implement AI-enhanced BI systems",
+          "Develop natural language query interfaces",
+          "Create automated insight generation",
+          "Design predictive dashboards"
+        ],
+        pathways: [
+          {
+            title: "Business Intelligence",
+            courses: ["Big Data and AI in Business", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Decision Support Systems",
+            courses: ["Artificial Intelligence Strategies and Enterprise Applications", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      },
+      {
+        id: 25,
+        title: "Strategic AI Implementation",
+        description: "Examines organizational approaches to successful AI adoption. Covers leadership, change management, and measuring business impact.",
+        prerequisites: ["Artificial Intelligence Strategies and Enterprise Applications"],
+        year: 3,
+        type: "elective",
+        outcomes: [
+          "Develop AI implementation strategies",
+          "Lead organizational change for AI adoption",
+          "Measure ROI of AI initiatives",
+          "Address implementation challenges"
+        ],
+        pathways: [
+          {
+            title: "AI Leadership",
+            courses: ["Responsible Artificial Intelligence", "Transforming Business with AI (Capstone)"]
+          },
+          {
+            title: "Digital Transformation",
+            courses: ["Artificial Intelligence Strategies and Enterprise Applications", "Transforming Business with AI (Capstone)"]
+          }
+        ]
+      }
+    ];
+
+    // Initial active program
+    let activeProgram = 'bachelor';
+
+    // DOM Elements
+    const courseGrid = document.getElementById('course-grid');
+    const bachelorBtn = document.getElementById('bachelor-btn');
+    const mbaBtn = document.getElementById('mba-btn');
+    const yearFilter = document.getElementById('year-filter');
+    const typeFilter = document.getElementById('type-filter');
+    const searchBox = document.getElementById('search-box');
+    const courseModal = document.getElementById('course-modal');
+    const modalTitle = document.querySelector('.modal-title');
+    const modalDescription = document.getElementById('modal-description');
+    const modalPrerequisites = document.getElementById('modal-prerequisites');
+    const modalOutcomes = document.getElementById('modal-outcomes');
+    const modalPathways = document.getElementById('modal-pathways');
+    const closeBtn = document.querySelector('.close-btn');
+    const closeModalBtns = document.querySelectorAll('.close-modal');
+
+    // Function to render courses based on active program and filters
+    function renderCourses() {
+      let courses = activeProgram === 'bachelor' ? bachelorCourses : mbaCourses;
+
+      // Apply filters
+      courses = courses.filter(course => {
+        let matches = true;
+        // Year filter applies only to bachelor courses (if year property exists)
+        if (activeProgram === 'bachelor' && yearFilter.value !== 'all') {
+          matches = matches && (course.year == yearFilter.value);
+        }
+        // Filter by course type
+        if (typeFilter.value !== 'all') {
+          matches = matches && (course.type === typeFilter.value);
+        }
+        // Filter by search query in title or description
+        if (searchBox.value.trim() !== '') {
+          const query = searchBox.value.trim().toLowerCase();
+          matches = matches && (course.title.toLowerCase().includes(query) || course.description.toLowerCase().includes(query));
+        }
+        return matches;
+      });
+
+      // Clear previous courses
+      courseGrid.innerHTML = '';
+
+      // If no courses match, show an empty state
+      if (courses.length === 0) {
+        courseGrid.innerHTML = `
+          <div class="empty-state">
+            <img src="https://via.placeholder.com/150" alt="No courses">
+            <h3>No courses found</h3>
+            <p>Please adjust your filters or search query.</p>
+          </div>`;
+        return;
+      }
+
+      // Create course cards
+      courses.forEach(course => {
+        const card = document.createElement('div');
+        card.classList.add('course-card', activeProgram);
+
+        // Card header
+        const cardHeader = document.createElement('div');
+        cardHeader.classList.add('card-header');
+        const titleEl = document.createElement('h3');
+        titleEl.classList.add('course-title');
+        titleEl.textContent = course.title;
+        cardHeader.appendChild(titleEl);
+
+        // Add year badge if available
+        if (course.year) {
+          const yearBadge = document.createElement('span');
+          yearBadge.classList.add('year-badge');
+          yearBadge.textContent = `Year ${course.year}`;
+          cardHeader.appendChild(yearBadge);
+        }
+
+        // Card body with course description
+        const cardBody = document.createElement('div');
+        cardBody.classList.add('card-body');
+        const descEl = document.createElement('p');
+        descEl.classList.add('course-description');
+        descEl.textContent = course.description;
+        cardBody.appendChild(descEl);
+
+        // Card footer with course type and view details button
+        const cardFooter = document.createElement('div');
+        cardFooter.classList.add('course-footer');
+        const typeEl = document.createElement('span');
+        typeEl.classList.add('course-type', course.type);
+        typeEl.textContent = course.type.charAt(0).toUpperCase() + course.type.slice(1);
+        cardFooter.appendChild(typeEl);
+
+        const viewBtn = document.createElement('button');
+        viewBtn.classList.add('view-details-btn');
+        viewBtn.textContent = 'View Details';
+        viewBtn.addEventListener('click', () => openModal(course));
+        cardFooter.appendChild(viewBtn);
+
+        // Assemble card
+        card.appendChild(cardHeader);
+        card.appendChild(cardBody);
+        card.appendChild(cardFooter);
+        courseGrid.appendChild(card);
+      });
+    }
+
+    // Function to open modal with course details
+    function openModal(course) {
+      modalTitle.textContent = course.title;
+      modalDescription.textContent = course.description;
+
+      // Clear previous modal content
+      modalPrerequisites.innerHTML = '';
+      modalOutcomes.innerHTML = '';
+      modalPathways.innerHTML = '';
+
+      // Populate prerequisites
+      if (course.prerequisites && course.prerequisites.length > 0) {
+        course.prerequisites.forEach(prereq => {
+          const li = document.createElement('li');
+          li.textContent = prereq;
+          modalPrerequisites.appendChild(li);
+        });
+      } else {
+        const li = document.createElement('li');
+        li.textContent = 'None';
+        modalPrerequisites.appendChild(li);
+      }
+
+      // Populate learning outcomes
+      if (course.outcomes && course.outcomes.length > 0) {
+        course.outcomes.forEach(outcome => {
+          const li = document.createElement('li');
+          li.textContent = outcome;
+          modalOutcomes.appendChild(li);
+        });
+      } else {
+        const li = document.createElement('li');
+        li.textContent = 'Not available';
+        modalOutcomes.appendChild(li);
+      }
+
+      // Populate career pathways
+      if (course.pathways && course.pathways.length > 0) {
+        course.pathways.forEach(pathway => {
+          const pathwayDiv = document.createElement('div');
+          pathwayDiv.classList.add('pathway');
+          const pathwayTitle = document.createElement('h3');
+          pathwayTitle.classList.add('pathway-title');
+          pathwayTitle.textContent = pathway.title;
+          pathwayDiv.appendChild(pathwayTitle);
+
+          const coursesDiv = document.createElement('div');
+          coursesDiv.classList.add('pathway-courses');
+          pathway.courses.forEach(pcourse => {
+            const courseSpan = document.createElement('span');
+            courseSpan.classList.add('pathway-course');
+            courseSpan.textContent = pcourse;
+            coursesDiv.appendChild(courseSpan);
+          });
+          pathwayDiv.appendChild(coursesDiv);
+          modalPathways.appendChild(pathwayDiv);
+        });
+      } else {
+        modalPathways.textContent = 'No career pathways available.';
+      }
+
+      // Display the modal
+      courseModal.style.display = 'block';
+    }
+
+    // Function to close the modal
+    function closeModal() {
+      courseModal.style.display = 'none';
+    }
+
+    // Event listeners for modal close actions
+    closeBtn.addEventListener('click', closeModal);
+    closeModalBtns.forEach(btn => btn.addEventListener('click', closeModal));
+    window.addEventListener('click', (e) => {
+      if (e.target === courseModal) {
+        closeModal();
+      }
+    });
+
+    // Filter event listeners
+    yearFilter.addEventListener('change', renderCourses);
+    typeFilter.addEventListener('change', renderCourses);
+    searchBox.addEventListener('input', renderCourses);
+
+    // Program selector event listeners
+    bachelorBtn.addEventListener('click', () => {
+      activeProgram = 'bachelor';
+      bachelorBtn.classList.add('active');
+      mbaBtn.classList.remove('active');
+      // Reset filters
+      yearFilter.value = 'all';
+      typeFilter.value = 'all';
+      searchBox.value = '';
+      renderCourses();
+    });
+
+    mbaBtn.addEventListener('click', () => {
+      activeProgram = 'mba';
+      mbaBtn.classList.add('active');
+      bachelorBtn.classList.remove('active');
+      // Reset filters (Year filter is less applicable for MBA courses)
+      yearFilter.value = 'all';
+      typeFilter.value = 'all';
+      searchBox.value = '';
+      renderCourses();
+    });
+
+    // Initial render
+    renderCourses();
+  </script>
+</body>
+</html>
